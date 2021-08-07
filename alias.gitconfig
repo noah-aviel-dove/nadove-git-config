@@ -68,8 +68,13 @@ a = add
 au = a -u --verbose
 ap = a --patch
 aup = au --patch
-r = reset 
+r = reset
+rp = r --
+rrp = "!f() { rev=$1; shift; git r $rev -- $@; }; f"
+ru = r @{u}
 rh = r --hard
+rhp = co --
+rhrp = "!f() { rev=$1; shift; git co $rev -- $@; }; f"
 rhu = rh @{u}
 rb = rebase
 rbi = rb -i
