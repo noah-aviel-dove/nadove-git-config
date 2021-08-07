@@ -16,3 +16,16 @@ section of `~/.gitconfig`, creating it at the end of the file if necessary.
 The contents of the old file are preserved in `~/.gitconfig.old`.
 
 For (slightly) more flexible behavior, see `python3 update.py --help`.
+
+# Disclaimer
+
+Many of these commands make assumptions and take shortcuts that generally work
+out for my own preferred workflows but are not generally applicable. The most
+obvious example is the abundance of aliases that assume the existence of a
+branch called `develop` which is an ancestor of the current branch. I am not
+fixing this because I have no ambition of making these aliases suitable for
+general use.
+
+Proceed at your own risk and please make sure you understand the source of the
+more complicated commands before running them, as some of them do things like
+force-pushing.
