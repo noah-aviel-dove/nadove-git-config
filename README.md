@@ -6,8 +6,10 @@ copy my ideas but don't expect any sort of stability or backwards compatibility.
 
 # Dependencies
 
-Implemented in pure python 3 with no external libraries. Current revision was 
-developed using 3.9.6.
+Implemented in pure python 3 and bash with no external libraries. The current
+revision was developed using python 3.9.6 and bash 5.1.8.
+
+Many aliases reference other aliases and thus require git>=2.20.
 
 # Installation/update
 
