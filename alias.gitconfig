@@ -60,7 +60,7 @@ cori = corig '.*'
 corig = "!f() { \
     source ~/.bashrc; \
     commits=$(git ldev | grep \"$1\"); \
-    function g() { git co $(cut -c1-8 <<<\"$1\")}; \
+    function g { git co $(cut -c1-8 <<<\"$1\")}; \
     export -f g; \
     run_with_choice g \"$\" \
 }; f"
@@ -152,7 +152,7 @@ cfr = commit --fixup
 cfri = "!f() { \
     source ~/.bashrc; \
     commits=$(git ldev); \
-    function g() { git cfr $(word1 \"$1\"); }; \
+    function g { git cfr $(word1 \"$1\"); }; \
     run_with_choice g \"$commits\"; \
 }; f"
 # Precondition check for car(i)
