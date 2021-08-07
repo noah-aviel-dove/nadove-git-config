@@ -10,4 +10,4 @@ Simply clone the repository and run `make`. This overwrites the `[alias]`
 section of `~/.gitconfig`, creating it at the end of the file if necessary.
 The contents of the old file are preserved in `~/.gitconfig.old`.
 
-For (slightly) more flexible behavior, see `python3 upgrade.py --help`.
+For (slightly) more flexible behavior, see `python3 update.py --help`.
