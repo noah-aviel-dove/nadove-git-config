@@ -33,7 +33,7 @@ codev = co develop
 cobi = cobig '.*'
 # Grep for and checkout branch
 cobig0 = "!f() { \
-    source ~/.bashrc; \
+    source ./common_bash; \
     function g { \
         branch=$(sed 's/^[ *]*//' <<<$1); \
         if [[ \"$branch\" =~ ^remotes/  ]]; then \
@@ -58,9 +58,9 @@ cobrig = "!f() { git cobig0 \"$(git blr | grep $1)\"; }; f"
 cori = corig '.*'
 # Grep for and checkout revision on current develop-descended branch
 corig = "!f() { \
-    source ~/.bashrc; \
+    source ./common_bash; \
     commits=$(git ldev | grep \"$1\"); \
-    function g { git co $(cut -c1-8 <<<\"$1\")}; \
+    function g { git co $(c8 <<<\"$1\")}; \
     export -f g; \
     run_with_choice g \"$\" \
 }; f"
@@ -82,7 +82,7 @@ rbc = rb --continue
 rbs = rb --skip
 aurbc = "!f() {git au; git rbc}; f"
 rev = rev-parse
-rev8 = "!f() { git rev $@ | cut -c1-8; }; f"
+rev8 = "!f() { git rev $@ | c8; }; f"
 d = diff @
 d0 = "!f() { git d --exit-code >/dev/null; }; f"
 dd = diff
@@ -110,14 +110,14 @@ dri = drig '.*'
 drli = drlig '.*'
 # Grep for and show commit on current develop-descended branch
 drig = "!f() { \
-    source ~/.bashrc; \
-    function g () { git dr $(cut -c1-8 <<<\"$1\"); }; \
+    source ./common_bash; \
+    function g () { git dr $(c8 <<<\"$1\"); }; \
     run_with_choice g \"$(git ldev | grep \"$1\")\"; \
 }; f"
 # Grep for and list changed files of commit on current develop-descended branch
 drlig = "!f() { \
-    source ~/.bashrc; \
-    function g () { git drl $(cut -c1-8 <<<\"$1\"); }; \
+    source ./common_bash; \
+    function g () { git drl $(c8 <<<\"$1\"); }; \
     run_with_choice g \"$(git ldev | grep \"$1\")\"; \
 }; f"
 cm = commit -m
@@ -127,7 +127,7 @@ cam = commit --amend -m
 caf = commit --amend --fixup
 # Amend HEAD to fixup! a commit on the current develop-descended branch
 cafi = "!f() { \
-    source ~/.bashrc; \
+    source ./common_bash; \
     function g { \
         git caf $1; \
     }; \
@@ -142,7 +142,7 @@ cf = "!f() { \
         | grep -vP '^\\w+ fixup!' \
         | head -1 \
     ); \
-    commit=$(cut -c1-8 <<<\"$target\"); \
+    commit=$(c8 <<<\"$target\"); \
     msg=$(cut -c10- <<<\"$target\"); \
     echo fixup! $msg; \
     git cfr $commit $@; \
@@ -150,7 +150,7 @@ cf = "!f() { \
 cfr = commit --fixup
 # Commit changes to fixup! a selected commit on the current develop-descended branch
 cfri = "!f() { \
-    source ~/.bashrc; \
+    source ./common_bash; \
     commits=$(git ldev); \
     function g { git cfr $(word1 \"$1\"); }; \
     run_with_choice g \"$commits\"; \
@@ -179,9 +179,9 @@ car = "!f() { \
 # Select and ammend a commit on the current develop-descended branch with staged changes
 cari = "!f() { \
     git car0 || return 1; \
-    source ~/.bashrc; \
+    source ./common_bash; \
     function g { \
-        source ~/.bashrc; \
+        source ./common_bash; \
         git car $(word1 \"$1\"); \
     }; \
     export -f g; \
@@ -210,9 +210,9 @@ rhpfc = "!f() { \
 }; f"
 # Hard reset to selection followed by force push followed by chained push
 rhpfci = "!f() { \
-    source ~/.bashrc; \
+    source ./common_bash; \
     function g { \
-        source ~/.bashrc; \
+        source ./common_bash; \
         git rhpfc $(word1 \"$1\"); \
     }; \
     export -f g; \
