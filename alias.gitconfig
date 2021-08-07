@@ -9,7 +9,7 @@ l1 = l -n1
 ldev = "!f() { git lb develop $@; }; f"
 h = l --pretty=%h
 h1 = l1 --pretty=%h
-hb = "!f() { git lb $@ --pretty=%h; }; f" # Branch must preceed switch
+hb = "!f() { git lb $@ --pretty=%h; }; f" # Branch must preceded switch
 hdev = ldev --pretty=%h
 # Log sha1 of develop-descended commit's descendants
 hr = "!f() { git hdev | while read r; do \
@@ -165,7 +165,7 @@ car0 = "!f() { \
         return 1; \
     fi; \
 }; f"
-# Ammend a commit on the current develop-descended branch with staged changes
+# Amend a commit on the current develop-descended branch with staged changes
 car = "!f() { \
     git car0 || return 1; \
     target=$(git rev8 $1); \
@@ -176,7 +176,7 @@ car = "!f() { \
     vcmds=$(printf \"/${fixup}\ndd/${target}\np0dwif ${ESC}:wq\"); \
     git rbidev <<<\"${vcmds}\" || git r @~;\
 }; f"
-# Select and ammend a commit on the current develop-descended branch with staged changes
+# Select and amend a commit on the current develop-descended branch with staged changes
 cari = "!f() { \
     git car0 || return 1; \
     source ./common_bash; \
