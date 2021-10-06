@@ -1,0 +1,10 @@
+#!/bin/bash
+. /home/nadove/personal/code/nadove-git-config/sh/common.sh
+# Explore commits on current develop-descended branch
+clear -x;
+redirects=$(
+    for r in $(git hdev | tac); do
+        echo -n '<(git show --color=always' $r ') ';
+    done;
+);
+bash -c "less -Rf $redirects";

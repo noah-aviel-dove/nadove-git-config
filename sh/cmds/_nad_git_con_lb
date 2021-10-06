@@ -1,0 +1,5 @@
+#!/bin/bash
+. /home/nadove/personal/code/nadove-git-config/sh/common.sh
+parent="$1";
+shift;
+git l $parent.. $@;

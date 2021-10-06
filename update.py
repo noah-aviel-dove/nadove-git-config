@@ -11,10 +11,15 @@ import shutil
 import sys
 import tempfile
 
+import arg_types
+from make_scripts import bash_script_prefix
+
 alias_section_pattern = re.compile(r'^\[alias]')
 other_section_pattern = re.compile(r'^\[\w+]')
 
 indent = ' ' * 4
+
+bash_hook = '#!bash'
 
 
 def update_aliases(
@@ -30,7 +35,13 @@ def update_aliases(
         new_config_file.write('[alias]\n')
 
     for alias in alias_file:
-        new_config_file.write(indent + alias)
+        cmd, _, subst = alias.partition('=')
+        subst = subst.strip()
+        if subst == bash_hook:
+            script = bash_script_prefix + cmd
+            new_config_file.write(f'{indent}{cmd} = !{script}\n')
+        else:
+            new_config_file.write(indent + alias)
 
     for config_line in old_config_file:
         if re.match(other_section_pattern, config_line):
@@ -50,10 +61,12 @@ def main(argv):
     parser.add_argument(
         'config_file_path',
         help='The existing configuration file to update',
+        type=arg_types.file_path,
     )
     parser.add_argument(
         'alias_file_path',
-        help='The file containing to new aliases',
+        help='The file containing to new sh',
+        type=arg_types.file_path,
     )
     parser.add_argument(
         '-B',
@@ -80,7 +93,7 @@ def main(argv):
         if backup_suffix:
             shutil.move(
                 old_config_path,
-                old_config_path + backup_suffix,
+                str(old_config_path) + backup_suffix,
             )
 
         shutil.move(

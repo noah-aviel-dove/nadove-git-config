@@ -13,9 +13,15 @@ Many aliases reference other aliases and thus require git>=2.20.
 
 # Installation/update
 
-Simply clone the repository and run `make`. This overwrites the `[alias]` 
+Clone the repository and run `make`. This overwrites the `[alias]`
 section of `~/.gitconfig`, creating it at the end of the file if necessary.
 The contents of the old file are preserved in `~/.gitconfig.old`.
+
+Next, add the following to your `~/.bashrc`:
+
+    export PATH=$PATH:<path_of_this_repo>/sh/cmds
+
+And source `~/.bashrc`.
 
 For (slightly) more flexible behavior, see `python3 update.py --help`.
 

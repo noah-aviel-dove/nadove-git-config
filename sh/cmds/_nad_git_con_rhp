@@ -1,0 +1,7 @@
+#!/bin/bash
+. /home/nadove/personal/code/nadove-git-config/sh/common.sh
+# Chained push
+for ref in $@; do
+    git rh $ref;
+    git p;
+done;

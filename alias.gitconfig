@@ -1,86 +1,39 @@
 s = status -sb
 l = log --oneline
 lg = l --graph
-lb = "!f() { \
-    parent=\"$1\"; \
-    shift; \
-    git l $parent.. $@; \
-}; f" 
+lb = #!bash
 l1 = l -n1
-ldev = "!f() { git lb develop $@; }; f"
+ldev = lb develop
 h = l --pretty=%h
 h1 = l1 --pretty=%h
-hb = "!f() { git lb $@ --pretty=%h; }; f" # Branch must preceded switch
+hb = #!bash
 hdev = ldev --pretty=%h
-# Log sha1 of develop-descended commit's descendants
-hr = "!f() { git hdev | while read r; do \
-        if [ \"$r\" == \"$1\" ]; then \
-            break; \
-        fi; \
-        echo $r; \
-    done; \
-}; f"
+hr = #!bash
 b = rev --abbrev-ref @
 bn = checkout -b
 bl = branch -a
 bll = branch
 blr = branch -r
-blg = "!f() { git bl | grep \"$1\"; }; f"
-bllg = "!f() { git bll | grep \"$1\"; }; f"
-blrg = "!f() { git blr | grep \"$1\"; }; f"
+blg = #!bash
+bllg = #!bash
+blrg = #!bash
 co = checkout
 co- = co -
 codev = co develop
 cobi = cobig '.*'
-# Grep for and checkout branch
-cobig0 = "!f() { \
-    source ./common_bash; \
-    function g { \
-        branch=$(sed 's/^[ *]*//' <<<$1); \
-        if [[ \"$branch\" =~ ^remotes/  ]]; then \
-            branch=\"--track ${branch%remotes/}\"; \
-        fi; \
-        git co $branch; \
-    }; \
-    n=$(wc -l <<<$\"$1\"); \
-    if [[ \"$1\" =~ ^[[:space:]]*$ ]]; then \
-        echo No matches; \
-        return 1; \
-    elif [ $n == 1 ]; then \
-        g $1;\
-    else \
-        export -f g; \
-        run_with_choice g \"$1\"; \
-    fi; \
-}; f"
-cobig = "!f() { git cobig0 \"$(git bl | grep $1)\"; }; f"
-coblig = "!f() { git cobig0 \"$(git bll | grep $1)\"; }; f"
-cobrig = "!f() { git cobig0 \"$(git blr | grep $1)\"; }; f"
+cobig0 = #!bash
+cobig = #!bash
+coblig = #!bash
+cobrig = #!bash
 cori = corig '.*'
-# Grep for and checkout revision on current develop-descended branch
-corig = "!f() { \
-    source ./common_bash; \
-    commits=$(git ldev | grep \"$1\"); \
-    function g { git co $(c8 <<<\"$1\")}; \
-    export -f g; \
-    run_with_choice g \"$\" \
-}; f"
+corig = #!bash
 a = add
 au = a -u --verbose
 ap = a --patch
 aup = au --patch
 r = reset
 ru = r @{u}
-# Unify `reset --hard <rev>` and `checkout <rev> -- <path>`
-rh = "!f() { \
-    if grep -qPe \"^-- \" <<<"$@"; then \
-        git co @ $@; \
-    elif grep -qPe \" -- \" <<<"$@"; then \
-        git co $@; \
-    else \
-        git r --hard $@; \
-    fi; \
-}; f"
+rh = #!bash
 rhu = rh @{u}
 rb = rebase
 rbi = rb -i
@@ -91,11 +44,11 @@ rbiadev = rbidev --autosquash
 rba = rb --abort
 rbc = rb --continue
 rbs = rb --skip
-aurbc = "!f() {git au; git rbc}; f"
+aurbc = #!bash
 rev = rev-parse
-rev8 = "!f() { git rev $@ | c8; }; f"
+rev8 = #!bash
 d = diff @
-d0 = "!f() { git d --exit-code >/dev/null; }; f"
+d0 = #!bash
 dd = diff
 ds = diff --staged
 du = diff @{u}
@@ -106,130 +59,33 @@ dsl = ds --name-only
 drl = dr --name-only
 dl = d --name-only
 dldev = dl develop
-# Explore commits on current develop-descended branch
-dridev = "!f() { \
-    clear -x; \
-    redirects=$( \
-        for r in $(git hdev | tac); do \
-            echo -n '<(git show --color=always' $r ') '; \
-        done; \
-    ); \
-    bash -c \"less -Rf $redirects\"; \
-}; f"
+dridev = #!bash
 dul = du --name-only 
 dri = drig '.*'
 drli = drlig '.*'
-# Grep for and show commit on current develop-descended branch
-drig = "!f() { \
-    source ./common_bash; \
-    function g () { git dr $(c8 <<<\"$1\"); }; \
-    run_with_choice g \"$(git ldev | grep \"$1\")\"; \
-}; f"
-# Grep for and list changed files of commit on current develop-descended branch
-drlig = "!f() { \
-    source ./common_bash; \
-    function g () { git drl $(c8 <<<\"$1\"); }; \
-    run_with_choice g \"$(git ldev | grep \"$1\")\"; \
-}; f"
+drig = #!bash
+drlig = #!bash
 cm = commit -m
 cw = cm wip
 ca = commit --amend --no-edit
 cam = commit --amend -m
 caf = commit --amend --fixup
-# Amend HEAD to fixup! a commit on the current develop-descended branch
-cafi = "!f() { \
-    source ./common_bash; \
-    function g { \
-        git caf $1; \
-    }; \
-    export -f g; \
-    run_with_choice g \"$(git ldev)\"; \
-};f "
+cafi = #!bash
 cami = commit --amend
-# Commit changes to fixup! the most recent non-fixup! commit on the current develop-descended branch
-cf = "!f() { \
-    target=$( \
-        git ldev \
-        | grep -vP '^\\w+ fixup!' \
-        | head -1 \
-    ); \
-    commit=$(c8 <<<\"$target\"); \
-    msg=$(cut -c10- <<<\"$target\"); \
-    echo fixup! $msg; \
-    git cfr $commit $@; \
-}; f"
+cf = #!bash
 cfr = commit --fixup
-# Commit changes to fixup! a selected commit on the current develop-descended branch
-cfri = "!f() { \
-    source ./common_bash; \
-    commits=$(git ldev); \
-    function g { git cfr $(word1 \"$1\"); }; \
-    run_with_choice g \"$commits\"; \
-}; f"
-# Precondition check for car(i)
-car0 = "!f() { \
-    if git ds --exit-code >/dev/null; then \
-        >&2 echo No changes staged; \
-        return 1; \
-    elif ! git dd --exit-code >/dev/null; then \
-        >&2 echo Cannot rebase: there are unstaged changes; \
-        return 1; \
-    fi; \
-}; f"
-# Amend a commit on the current develop-descended branch with staged changes
-car = "!f() { \
-    git car0 || return 1; \
-    target=$(git rev8 $1); \
-    ESC=$(python -c 'print(chr(0x1b))'); \
-    fixup=__FIXUP__; \
-    git ds; \
-    git cm \"${fixup}\"; \
-    vcmds=$(printf \"/${fixup}\ndd/${target}\np0dwif ${ESC}:wq\"); \
-    git rbidev <<<\"${vcmds}\" || git r @~;\
-}; f"
-# Select and amend a commit on the current develop-descended branch with staged changes
-cari = "!f() { \
-    git car0 || return 1; \
-    source ./common_bash; \
-    function g { \
-        source ./common_bash; \
-        git car $(word1 \"$1\"); \
-    }; \
-    export -f g; \
-    run_with_choice g \"$(git ldev)\"; \
-}; f"  
+cfri = #!bash
+car0 = #!bash
+car = #!bash
+cari = #!bash
 p = push
 pf = push --force-with-lease
-pu = "!f() { git p --set-upstream github $(git b); }; f"
-# Chained push
-rhp = "!f() { \
-    for ref in $@; do \
-        git rh $ref; \
-        git p; \
-    done; \
-}; f"
-# Hard reset followed by force push
-rhpf = "!f() { \
-    git rh $1; \
-    git pf; \
-}; f"
-# Hard reset followed by force push followed by chained push
-rhpfc = "!f() { \
-    refs=$(git hr $1 | tac); \
-    git rhpf $(head -1 <<<\"$refs\"); \
-    git rhp $(tail -n +2 <<<\"$refs\"); \
-}; f"
-# Hard reset to selection followed by force push followed by chained push
-rhpfci = "!f() { \
-    source ./common_bash; \
-    function g { \
-        source ./common_bash; \
-        git rhpfc $(word1 \"$1\"); \
-    }; \
-    export -f g; \
-    run_with_choice g \"$(git ldev)\"; \
-}; f"
+pu = #!bash
+rhp = #!bash
+rhpf = #!bash
+rhpfc = #!bash
+rhpfci = #!bash
 ff = pull --ff-only
 f = fetch
-fs = "!f() { git f; git s; }; f"
-frhu = "!f() { git f; git rhu; }; f"
+fs = #!bash
+frhu = #!bash

@@ -1,0 +1,9 @@
+#!/bin/bash
+. /home/nadove/personal/code/nadove-git-config/sh/common.sh
+# Select and amend a commit on the current develop-descended branch with staged changes
+git car0 || return 1;
+function g {
+    git car $(word1 "$1");
+};
+export -f g;
+run_with_choice g "$(git ldev)";

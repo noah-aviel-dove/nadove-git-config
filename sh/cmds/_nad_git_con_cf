@@ -1,0 +1,8 @@
+#!/bin/bash
+. /home/nadove/personal/code/nadove-git-config/sh/common.sh
+# Commit changes to fixup! the most recent non-fixup! commit on the current develop-descended branch
+target=$(git ldev | grep -vP '^\\w+ fixup!' | head -1);
+commit=$(c8 <<<"$target");
+msg=$(cut -c10- <<<"$target");
+echo fixup! $msg;
+git cfr $commit $@;
