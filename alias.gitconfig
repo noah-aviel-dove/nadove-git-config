@@ -18,7 +18,6 @@ blg = #!bash
 bllg = #!bash
 blrg = #!bash
 co = checkout
-co- = co -
 codev = co develop
 cobi = cobig '.*'
 cobig0 = #!bash
