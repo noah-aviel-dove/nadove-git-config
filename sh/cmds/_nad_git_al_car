@@ -1,5 +1,5 @@
 #!/bin/bash
-. ./sh/common.sh
+. $(dirname "$0")/../common.sh
 # Amend a commit on the current develop-descended branch with staged changes
 git car0 || return 1;
 target=$(git rev8 $1);

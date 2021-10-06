@@ -1,5 +1,5 @@
 #!/bin/bash
-. ./sh/common.sh
+. $(dirname "$0")/../common.sh
 # Unify `reset --hard <rev>` and `checkout <rev> -- <path>`
 if grep -qPe "^-- " <<<"$@"; then
     git co @ $@;

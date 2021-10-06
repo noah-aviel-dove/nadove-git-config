@@ -1,5 +1,5 @@
 #!/bin/bash
-. ./sh/common.sh
+. $(dirname "$0")/../common.sh
 parent="$1";
 shift;
 git l $parent.. $@;

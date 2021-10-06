@@ -26,7 +26,7 @@ def write_script(
     with open(path, 'w') as f:
         f.writelines([
             f'#!/bin/bash\n',
-            f'. {root_dir}/sh/common.sh\n',
+            f'. $(dirname "$0")/../common.sh\n',
             *lines
         ])
 

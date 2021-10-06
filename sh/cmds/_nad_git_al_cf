@@ -1,5 +1,5 @@
 #!/bin/bash
-. ./sh/common.sh
+. $(dirname "$0")/../common.sh
 # Commit changes to fixup! the most recent non-fixup! commit on the current develop-descended branch
 target=$(git ldev | grep -vP '^\\w+ fixup!' | head -1);
 commit=$(c8 <<<"$target");

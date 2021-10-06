@@ -1,5 +1,5 @@
 #!/bin/bash
-. ./sh/common.sh
+. $(dirname "$0")/../common.sh
 # Chained push
 for ref in $@; do
     git rh $ref;

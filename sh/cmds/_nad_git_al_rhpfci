@@ -1,5 +1,5 @@
 #!/bin/bash
-. ./sh/common.sh
+. $(dirname "$0")/../common.sh
 # Hard reset to selection followed by force push followed by chained push
 function g {
     git rhpfc $(word1 "$1");

@@ -1,5 +1,5 @@
 #!/bin/bash
-. ./sh/common.sh
+. $(dirname "$0")/../common.sh
 # Grep for and checkout branch
 function g {
     branch=$(sed 's/^[ *]*//' <<<$1);

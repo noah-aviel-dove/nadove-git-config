@@ -1,5 +1,5 @@
 #!/bin/bash
-. ./sh/common.sh
+. $(dirname "$0")/../common.sh
 # Grep for and show commit on current develop-descended branch
 function g () { git dr $(c8 <<<"$1"); };
 run_with_choice g "$(git ldev | grep "$1")";

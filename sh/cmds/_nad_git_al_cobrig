@@ -1,5 +1,5 @@
 #!/bin/bash
-. ./sh/common.sh
+. $(dirname "$0")/../common.sh
 git cobig0 "$(git blr | grep $1)";
 ## corig
 # Grep for and checkout revision on current develop-descended branch

@@ -1,5 +1,5 @@
 #!/bin/bash
-. ./sh/common.sh
+. $(dirname "$0")/../common.sh
 # Hard reset followed by force push followed by chained push
 refs=$(git hr $1 | tac);
 git rhpf $(head -1 <<<"$refs");

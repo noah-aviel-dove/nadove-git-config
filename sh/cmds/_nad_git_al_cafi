@@ -1,5 +1,5 @@
 #!/bin/bash
-. ./sh/common.sh
+. $(dirname "$0")/../common.sh
 # Amend HEAD to fixup! a commit on the current develop-descended branch
 function g {
     git caf $1;

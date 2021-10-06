@@ -1,4 +1,4 @@
 #!/bin/bash
-. ./sh/common.sh
+. $(dirname "$0")/../common.sh
 git f;
 git rhu;

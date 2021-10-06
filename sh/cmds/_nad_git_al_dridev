@@ -1,5 +1,5 @@
 #!/bin/bash
-. ./sh/common.sh
+. $(dirname "$0")/../common.sh
 # Explore commits on current develop-descended branch
 clear -x;
 redirects=$(
