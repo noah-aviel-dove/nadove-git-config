@@ -200,7 +200,7 @@ cari = "!f() { \
 }; f"  
 p = push
 pf = push --force-with-lease
-pu = "!f() { git p --set-upstream origin $(git b); }; f"
+pu = "!f() { git p --set-upstream github $(git b); }; f"
 # Chained push
 rhp = "!f() { \
     for ref in $@; do \
