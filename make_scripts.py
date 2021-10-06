@@ -43,7 +43,8 @@ def make_scripts(
                 if script_lines:
                     write_script(output_dir / script_name, script_lines)
                     script_lines.clear()
-                cmd_name = line.removeprefix(cmd_head).strip()
+                _, _, cmd_name = line.partition(cmd_head)
+                cmd_name = cmd_name.strip()
                 script_name = bash_script_prefix + cmd_name
             elif cmd_name is not None:
                 script_lines.append(line)
