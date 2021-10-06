@@ -1,5 +1,6 @@
 s = status -sb
 l = log --oneline
+lg = l --graph
 lb = "!f() { \
     parent=\"$1\"; \
     shift; \
