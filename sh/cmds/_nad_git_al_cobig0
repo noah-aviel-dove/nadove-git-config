@@ -1,5 +1,5 @@
 #!/bin/bash
-. /home/nadove/personal/code/nadove-git-config/sh/common.sh
+. ./sh/common.sh
 # Grep for and checkout branch
 function g {
     branch=$(sed 's/^[ *]*//' <<<$1);

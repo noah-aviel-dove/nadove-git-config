@@ -1,5 +1,5 @@
 #!/bin/bash
-. /home/nadove/personal/code/nadove-git-config/sh/common.sh
+. ./sh/common.sh
 # Precondition check for car(i)
 if git ds --exit-code >/dev/null; then
     >&2 echo No changes staged;

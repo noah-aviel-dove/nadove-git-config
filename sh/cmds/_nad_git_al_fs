@@ -1,0 +1,4 @@
+#!/bin/bash
+. ./sh/common.sh
+git f;
+git s;

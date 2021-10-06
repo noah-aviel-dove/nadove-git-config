@@ -14,7 +14,7 @@ import arg_types
 
 root_dir = pathlib.Path(__file__).parent
 
-bash_script_prefix = '_' + '_'.join(w[:3] for w in root_dir.name.split('-')) + '_'
+bash_script_prefix = '_nad_git_al_'
 
 cmd_head = '#' * 3
 

@@ -1,5 +1,5 @@
 #!/bin/bash
-. /home/nadove/personal/code/nadove-git-config/sh/common.sh
+. ./sh/common.sh
 # Amend a commit on the current develop-descended branch with staged changes
 git car0 || return 1;
 target=$(git rev8 $1);

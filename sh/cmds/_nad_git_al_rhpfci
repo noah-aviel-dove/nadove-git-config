@@ -1,5 +1,5 @@
 #!/bin/bash
-. /home/nadove/personal/code/nadove-git-config/sh/common.sh
+. ./sh/common.sh
 # Hard reset to selection followed by force push followed by chained push
 function g {
     git rhpfc $(word1 "$1");

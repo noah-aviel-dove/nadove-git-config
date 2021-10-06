@@ -1,0 +1,3 @@
+#!/bin/bash
+. ./sh/common.sh
+git bll | grep "$1"

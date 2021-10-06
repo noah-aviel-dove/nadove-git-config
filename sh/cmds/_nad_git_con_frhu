@@ -1,4 +1,0 @@
-#!/bin/bash
-. /home/nadove/personal/code/nadove-git-config/sh/common.sh
-git f;
-git rhu;

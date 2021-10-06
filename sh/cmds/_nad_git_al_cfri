@@ -1,5 +1,5 @@
 #!/bin/bash
-. /home/nadove/personal/code/nadove-git-config/sh/common.sh
+. ./sh/common.sh
 # Commit changes to fixup! a selected commit on the current develop-descended branch
 commits=$(git ldev);
 function g { git cfr $(word1 "$1"); };

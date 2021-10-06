@@ -1,0 +1,3 @@
+#!/bin/bash
+. ./sh/common.sh
+git p --set-upstream github $(git b);

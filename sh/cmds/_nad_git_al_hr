@@ -1,5 +1,5 @@
 #!/bin/bash
-. /home/nadove/personal/code/nadove-git-config/sh/common.sh
+. ./sh/common.sh
 # Log sha1 of develop-descended commit's descendants
 git hdev | while read r; do
     if [ "$r" == "$1" ]; then

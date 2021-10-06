@@ -1,5 +1,5 @@
 #!/bin/bash
-. /home/nadove/personal/code/nadove-git-config/sh/common.sh
+. ./sh/common.sh
 git cobig0 "$(git blr | grep $1)";
 ## corig
 # Grep for and checkout revision on current develop-descended branch

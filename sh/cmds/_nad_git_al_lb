@@ -1,0 +1,5 @@
+#!/bin/bash
+. ./sh/common.sh
+parent="$1";
+shift;
+git l $parent.. $@;

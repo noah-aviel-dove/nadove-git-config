@@ -1,5 +1,5 @@
 #!/bin/bash
-. /home/nadove/personal/code/nadove-git-config/sh/common.sh
+. ./sh/common.sh
 # Unify `reset --hard <rev>` and `checkout <rev> -- <path>`
 if grep -qPe "^-- " <<<"$@"; then
     git co @ $@;
