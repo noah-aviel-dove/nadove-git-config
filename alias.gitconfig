@@ -80,6 +80,7 @@ cari = #!bash
 p = push
 pf = push --force-with-lease
 pu = #!bash
+pd = push --delete
 rhp = #!bash
 rhpf = #!bash
 rhpfc = #!bash
