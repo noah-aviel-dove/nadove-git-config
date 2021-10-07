@@ -1,0 +1,3 @@
+#!/bin/bash
+. $(dirname "$0")/../common.sh
+git push --dry-run $@ && git push --quiet $@;

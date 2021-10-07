@@ -1,5 +1,7 @@
 # Prevent accidentally running the script from executing any commands
 exit 0;
+### p
+git push --dry-run $@ && git push --quiet $@;
 ### blg
 git bl | grep "$1"
 ### bllg
