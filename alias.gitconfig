@@ -86,6 +86,7 @@ rhpf = #!bash
 rhpfc = #!bash
 rhpfci = #!bash
 m = merge --no-ff
+mf = merge --ff-only
 ff = pull --ff-only
 f = fetch
 fs = #!bash
