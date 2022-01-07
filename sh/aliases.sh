@@ -2,6 +2,11 @@
 exit 0;
 ### p
 git push --dry-run $@ && git push --quiet $@;
+### b-
+# Resolve the previously selected branch, often denoted as '-'
+git co - &>/dev/null || exit 1;
+git b;
+git co - &>/dev/null;
 ### blg
 git bl | grep "$1"
 ### bllg

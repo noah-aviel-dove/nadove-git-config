@@ -10,6 +10,7 @@ hb = #!bash
 hdev = ldev --pretty=%h
 hr = #!bash
 b = rev --abbrev-ref @
+b- = #!bash
 bn = checkout -b
 bl = branch -a
 bll = branch
