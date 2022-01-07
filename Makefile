@@ -1,4 +1,4 @@
-update:
+update: scripts
 	python3 update.py ~/.gitconfig ./alias.gitconfig
 
 scripts:
@@ -11,4 +11,5 @@ clean:
 
 .PHONY:
 	update
+	scripts
 	clean
