@@ -132,7 +132,7 @@ function g {
 export -f g;
 run_with_choice g "$(git ldev)";
 ### pu
-git p --set-upstream github $(git b);
+git p --set-upstream $1 $(git b);
 ### rhp
 # Chained push
 for ref in $@; do
