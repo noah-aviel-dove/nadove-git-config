@@ -7,6 +7,8 @@ if [ "$target" == '-' ]; then
     target=$(git b-);
 fi;
 git log --oneline "$target" $@;
+### hb
+git lb $@ --pretty=%h;
 ### p
 git push --dry-run $@ && git push --quiet $@;
 ### b-
