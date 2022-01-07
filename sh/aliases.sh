@@ -24,6 +24,9 @@ done;
 ### lb
 parent="$1";
 shift;
+if [ "$parent" == '-' ]; then
+    parent=$(git b-);
+fi;
 git l $parent.. $@;
 ### cobig0
 # Grep for and checkout branch
