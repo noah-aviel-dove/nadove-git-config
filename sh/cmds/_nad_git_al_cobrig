@@ -1,9 +1,0 @@
-#!/bin/bash
-. $(dirname "$0")/../common.sh
-git cobig0 "$(git blr | grep $1)";
-## corig
-# Grep for and checkout revision on current develop-descended branch
-commits=$(git ldev | grep "$1");
-function g { git co $(c8 <<<"$1")};
-export -f g;
-run_with_choice g "$"

@@ -1,9 +1,0 @@
-#!/bin/bash
-. $(dirname "$0")/../common.sh
-# Log sha1 of develop-descended commit's descendants
-git hdev | while read r; do
-    if [ "$r" == "$1" ]; then
-        break;
-    fi;
-    echo $r;
-done;
