@@ -53,6 +53,7 @@ ds = diff --staged
 du = diff @{u}
 ddev = diff develop
 dr = show --oneline
+dru = dr @{u}
 ddl = dd --name-only
 dsl = ds --name-only
 drl = dr --name-only
