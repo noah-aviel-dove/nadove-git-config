@@ -1,5 +1,5 @@
 s = status -sb
-l = log --oneline
+l = #!bash
 lg = l --graph
 lb = #!bash
 l1 = l -n1

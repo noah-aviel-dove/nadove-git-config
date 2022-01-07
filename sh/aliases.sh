@@ -1,5 +1,12 @@
 # Prevent accidentally running the script from executing any commands
 exit 0;
+### l
+target="$1";
+shift;
+if [ "$target" == '-' ]; then
+    target=$(git b-);
+fi;
+git log --oneline "$target" $@;
 ### p
 git push --dry-run $@ && git push --quiet $@;
 ### b-
