@@ -1,21 +1,13 @@
 # Prevent accidentally running the script from executing any commands
 exit 0;
 ### l
-target="$1";
+target=$(git b "$1");
 shift;
-if [ "$target" == '-' ]; then
-    target=$(git b-);
-fi;
-git log --oneline "$target" $@;
+git log --oneline $target $@;
 ### hb
 git lb $@ --pretty=%h;
 ### p
 git push --dry-run $@ && git push --quiet $@;
-### b-
-# Resolve the previously selected branch, often denoted as '-'
-git co - &>/dev/null || exit 1;
-git b;
-git co - &>/dev/null;
 ### blg
 git bl | grep "$1"
 ### bllg
@@ -30,12 +22,12 @@ git hdev | while read r; do
     fi;
     echo $r;
 done;
+### b
+target=$(sed 's/^-$/@{-1}/g'<<<${1:-@});
+git rev --abbrev-ref $target;
 ### lb
-parent="$1";
+parent=$(git b "$1");
 shift;
-if [ "$parent" == '-' ]; then
-    parent=$(git b-);
-fi;
 git l $parent.. $@;
 ### cobig0
 # Grep for and checkout branch

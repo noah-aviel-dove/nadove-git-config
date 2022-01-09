@@ -9,8 +9,8 @@ h1 = l1 --pretty=%h
 hb = #!bash
 hdev = ldev --pretty=%h
 hr = #!bash
-b = rev --abbrev-ref @
-b- = #!bash
+b = #!bash
+bu = b @{u}
 bn = checkout -b
 bl = branch -a
 bll = branch
