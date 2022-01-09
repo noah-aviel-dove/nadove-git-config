@@ -1,20 +1,16 @@
 """
 Input: argv, `n *args`
-Output: stdout, first `n` positional arguments in `args` that aren't preceded by ` -- `, one per line.
+Output: stdout, first `n` positional arguments in `args` that aren't preceded by
+` -- `, one per line, or an empty line if there are no such arguments.
+Then all other args on one line.
 """
 
 import sys
-import itertools
 
 args = sys.argv[1:]
 
 n = int(args.pop(0))
 
-args = [
-    arg
-    for arg in itertools.takewhile(lambda arg: arg != '--', args)
-    if not arg.startswith('--')
-]
 head = []
 tail = []
 stop = False
@@ -26,4 +22,7 @@ for arg in args:
         if arg == '--':
             stop = True
 
-print(*args[:n], sep='\n')
+if not head:
+    head.append('')
+
+print(*head, ' '.join(tail), sep='\n')
