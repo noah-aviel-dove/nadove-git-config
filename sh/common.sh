@@ -8,6 +8,19 @@ function word1 {
     cut -f1 -d' ' <<<"$1";
 }
 
+function argn {
+    n="\$$1";
+    shift;
+    eval "arg=$n";
+    printf '%s' "$arg";
+}
+
+function local_py_exec {
+    py="$1";
+    shift;
+    python3 "$(dirname "$0")/../py/$py" $@;
+}
+
 function run_with_choice {
     cmd="$1"
     shift
