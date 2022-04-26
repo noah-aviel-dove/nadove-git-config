@@ -1,5 +1,13 @@
 # Prevent accidentally running the script from executing any commands
 exit 0;
+### b
+target=$(sed 's/^-$/@{-1}/g'<<<${1:-@});
+git rev-parse --abbrev-ref $target
+### rev
+target=$(sed 's/^-$/@{-1}/g'<<<${1:-@});
+git rev-parse $target
+### rev8
+c8 $(git rev $@)
 ### l
 target=$(git b "$1");
 shift;
@@ -22,9 +30,6 @@ git hdev | while read r; do
     fi;
     echo $r;
 done;
-### b
-target=$(sed 's/^-$/@{-1}/g'<<<${1:-@});
-git rev --abbrev-ref $target;
 ### lb
 parent=$(git b "$1");
 shift;
@@ -73,8 +78,6 @@ fi;
 ### aurbc
 git au;
 git rbc;
-### rev8
-c8 $(git rev $@)
 ### d0
 git d --exit-code >/dev/null;
 ### dr
