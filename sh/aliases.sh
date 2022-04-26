@@ -81,7 +81,7 @@ git rbc;
 ### d0
 git d --exit-code >/dev/null;
 ### dr
-git show --oneline $(git b "$1");
+git show --oneline $(git rev "$1");
 ### dridev
 # Explore commits on current develop-descended branch
 clear -x;
