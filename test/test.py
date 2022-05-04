@@ -1,3 +1,4 @@
+from collections import defaultdict
 import os
 from pathlib import Path
 import shlex
@@ -7,6 +8,7 @@ from typing import (
     AbstractSet,
     Dict,
     List,
+    Mapping,
     Optional,
     Sequence,
     Union,
@@ -81,9 +83,11 @@ class GitAliasTestCase(TestCase):
         os.chdir(test_dir)
 
     def assertOutputsEqual(self, cmd1: Command, cmd2: Command):
-        self.assertEqual(cmd1.exec_out(), cmd2.exec_out())
+        self.assertEqual(cmd1.exec_out(), cmd2.exec_out(), msg=(cmd1.args, cmd2.args))
 
-    def assertGitOutputsEqual(self, args1: Sequence[Optional[str]], args2: Sequence[Optional[str]]):
+    def assertGitOutputsEqual(self,
+                              args1: Sequence[Optional[str]],
+                              args2: Sequence[Optional[str]]):
         self.assertOutputsEqual(self.git_command(*args1), self.git_command(*args2))
 
     def current_git_branch(self) -> bytes:
@@ -152,6 +156,11 @@ class TestLocalInfo(ReadOnlyGitAliasTestCase):
                 self.assertGitOutputsEqual(shlex.split(stock_cmd),
                                            shlex.split(stock_cmd))
 
+    @alias_test('lb')
+    @alias_test('hb')
+    def test_log_from_parent(self):
+        pass
+
     @alias_test('b')
     def test_branch(self):
         self.assertBranch(self.init_branch)
@@ -200,6 +209,21 @@ class TestLocalInfo(ReadOnlyGitAliasTestCase):
             self.assertGitOutputsEqual(['show', '--oneline', '@{-1}'],
                                        ['dr', '-'])
 
+    @alias_test('d')
+    @alias_test('dl')
+    def test_diff_between_two_commits(self):
+        commits = ['@', '@^', '@~2', self.init_branch, self.child_branches[0], '@{-1}', '@{-1}']
+        commits = list(zip(commits, commits[:-1] + ['-']))
+        for stock_c1, alias_c1 in commits:
+            for stock_c2, alias_c2 in commits:
+                for stock_cmd, alias_cmd in [
+                    (['diff'], ['d']),
+                    (['diff', '--name-only'], ['dl'])
+                ]:
+                    with self.subTest(' '.join([*stock_cmd, stock_c1, stock_c2])):
+                        self.assertGitOutputsEqual([*alias_cmd, alias_c1, alias_c2],
+                                                   [*stock_cmd, stock_c1, stock_c2])
+
 
 class TestLocalReadWrite(ReadWriteGitAliasTestCase):
 
@@ -215,45 +239,155 @@ class TestLocalReadWrite(ReadWriteGitAliasTestCase):
             else:
                 with open('c.txt') as f:
                     self.assertEqual([f'Editing on branch {branch}\n'], f.readlines())
-        
+
         swap = self.git_command('co', '-')
         for i in [-2, -1]:
             swap.exec()
             self.assertBranch(branches[i])
-        
+
         self.git_command('co', '@^').exec()
         self.assertBranch('HEAD')
         swap.exec()
         self.assertBranch(branches[i])
 
-
+    @alias_test('d0')
     @alias_test('d')
+    @alias_test('dl')
     @alias_test('dd')
+    @alias_test('ddl')
     @alias_test('ds')
+    @alias_test('dsl')
     @alias_test('a')
-    @alias_test('au')
     @alias_test('r')
-    def test_dirtiness(self):
-        d = self.git_command('d')
-        dd = self.git_command('dd')
-        ds = self.git_command('ds')
-        r = self.git_command('r')
-        for cmd in [d, dd, ds]:
-            cmd.assertOutput('\n')
-        for f in 'ab':
-            Command(['bash', '-c', f'echo overwrite {f}.txt >{f}.txt']).exec()
-        self.assertGitCommandOutputsEqual(['d'], ['diff'])
-        self.assertGitCommandOutputsEqual(['dd'], ['diff'])
-        ds.assertOutput('\n')
-        self.git_command('a a.txt').assertOutput('a.txt')
-        dd.assertOutput('\n')
-        self.assertGitCommandOutputsEqual(['ds'], ['diff', '--staged'])
-        self.assertGitCommandOutputsEqual(['d'], ['ds'])
-        r.assertOutput('Unstaged changes after reset:\nM\ta.txt\n')
-        self.git_command('au').assertOutput('a.txt\nb.txt\n')
-        
+    @alias_test('rh')
+    def test_dirty_working_tree(self):
+        with self.subTest('clean'):
+            self._check_is_dirty(False)
+            self._check_dirty_files({})
+            self._check_diff()
 
-        
+        for f in ['a', 'new']:
+            Command('bash', '-c', f'echo overwrite {f}.txt >{f}.txt').exec()
+
+        with self.subTest('dirty'):
+            self._check_is_dirty(True)
+            self._check_dirty_files({'M': {'a.txt'}, '??': {'new.txt'}})
+            self._check_diff()
+
+        self._add(explicit={'a.txt'})
+
+        with self.subTest('partial_staged'):
+            self._check_is_dirty(True)
+            self._check_dirty_files({'M': {'a.txt'}, '??': {'new.txt'}})
+            self._check_diff()
+
+        self._add(explicit={'new.txt'})
+
+        with self.subTest('fully_staged'):
+            self._check_is_dirty(True)
+            self._check_dirty_files({'M': {'a.txt'}, 'A': {'new.txt'}})
+            self._check_diff()
+
+        self._soft_reset_head(explicit={'new.txt'}, expected={'new.txt'})
+
+        with self.subTest('after_partial_soft_reset'):
+            self._check_is_dirty(True)
+            self._check_dirty_files({'M': {'a.txt'}, '??': {'new.txt'}})
+            self._check_diff()
+
+        self._soft_reset_head(explicit={'new.txt', 'a.txt'}, expected={'a.txt'})
+
+        with self.subTest('after_full_soft_reset'):
+            self._check_is_dirty(True)
+            self._check_dirty_files({'M': {'a.txt'}, '??': {'new.txt'}})
+            self._check_diff()
+
+        self._hard_reset_head(explicit={'a.txt'})
+
+        with self.subTest('after_partial_hard_reset'):
+            self._check_is_dirty(False)
+            self._check_dirty_files({'??': {'new.txt'}})
+            self._check_diff()
+
+        self._hard_reset_head()
+
+        # FIXME This is now pointless
+        with self.subTest('after_full_hard_reset'):
+            self._check_is_dirty(False)
+            self._check_dirty_files({'??': {'new.txt'}})
+            self._check_diff()
+
+    def _check_diff(self):
+        for alias_cmd, stock_cmd in [
+            ('d', ['diff', '@']),
+            ('dd', ['diff']),
+            ('ds', ['diff', '--staged'])
+        ]:
+            for path in [
+                [],
+                ['--', 'a.txt'],
+                ['--', 'a.txt', 'b.txt']
+            ]:
+                self.assertGitOutputsEqual([alias_cmd, *path],
+                                           stock_cmd + path)
+                self.assertGitOutputsEqual([alias_cmd + 'l', *path],
+                                           stock_cmd + ['--name-only'] + path)
+
+    def _check_is_dirty(self, is_dirty: bool):
+        try:
+            output = self.git_command('d0').exec_out()
+        except subprocess.CalledProcessError as e:
+            self.assertTrue(is_dirty)
+            self.assertEqual(1, e.returncode)
+            output = e.output
+        else:
+            self.assertFalse(is_dirty)
+        self.assertEqual(b'', output)
+
+    def _add(self, *,
+             explicit: AbstractSet[str],
+             expected: Optional[AbstractSet[str]] = None):
+
+        def msg(p):
+            return f"add '{p}'\n"
+
+        if expected is None:
+            expected = explicit
+
+        expected = ''.join(map(msg, sorted(expected)))
+        self.git_command('a', *explicit).assertOutput(expected)
+
+    def _soft_reset_head(self, *,
+                         expected: AbstractSet[str],
+                         explicit: Optional[AbstractSet[str]] = None):
+        if explicit is None or (expected and expected != explicit):
+            expected = 'Unstaged changes after reset:\n' + ''.join(f'M\t{p}\n' for p in sorted(expected))
+        else:
+            expected = ''
+
+        if explicit:
+            explicit = ['--', *explicit]
+
+        self.git_command('r', *explicit).assertOutput(expected)
+
+    def _check_dirty_files(self, expected_file_states: Mapping[str, AbstractSet[str]]):
+        output = self.git_command('s').exec_out().decode('UTF8')
+        output = [l.strip().split() for l in output.split('\n')[1:] if l]
+        assert len({path for status, path in output}) == len(output), output
+        file_states = defaultdict(set)
+        for status, path in output:
+            file_states[status].add(path)
+        self.assertEqual(expected_file_states, file_states)
+
+    def _hard_reset_head(self, *, explicit: AbstractSet[str] = frozenset()):
+        if explicit:
+            explicit = ['--', *explicit]
+            expected = ''
+        else:
+            head = self.git_command('log', '-n1', '--pretty=%h %s').exec_out()
+            expected = b'HEAD is now at ' + head
+        self.git_command('rh', *explicit).assertOutput(expected)
+
 
 # FIXME https://github.com/noah-aviel-dove/nadove-git-aliases/issues/20
 @unittest.skip('Tests involving a remote repository are not implemented')
@@ -279,6 +413,7 @@ class TestRemote(GitAliasTestCase):
     @alias_test('ff')
     @alias_test('fs')
     @alias_test('frhu')
+    @alias_test('bl')
     def test(self):
         raise NotImplementedError
 
