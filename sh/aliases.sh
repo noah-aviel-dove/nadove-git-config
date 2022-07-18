@@ -1,5 +1,13 @@
 # Prevent accidentally running the script from executing any commands
 exit 0;
+### b
+target=$(sed 's/^-$/@{-1}/g'<<<${1:-@});
+git rev-parse --abbrev-ref $target
+### rev
+target=$(sed 's/^-$/@{-1}/g'<<<${1:-@});
+git rev-parse $target
+### rev8
+c8 $(git rev $@)
 ### l
 target=$(git b "$1");
 shift;
@@ -22,9 +30,6 @@ git hdev | while read r; do
     fi;
     echo $r;
 done;
-### b
-target=$(sed 's/^-$/@{-1}/g'<<<${1:-@});
-git rev --abbrev-ref $target;
 ### lb
 parent=$(git b "$1");
 shift;
@@ -58,7 +63,7 @@ git cobig0 "$(git blr | grep $1)";
 ## corig
 # Grep for and checkout revision on current develop-descended branch
 commits=$(git ldev | grep "$1");
-function g { git co $(c8 <<<"$1")};
+function g { git co $(c8 "$1")};
 export -f g;
 run_with_choice g "$"
 ### rh
@@ -73,12 +78,10 @@ fi;
 ### aurbc
 git au;
 git rbc;
-### rev8
-git rev $@ | c8
 ### d0
 git d --exit-code >/dev/null;
 ### dr
-git show --oneline $(git b "$1");
+git show --oneline $(git rev "$1");
 ### dridev
 # Explore commits on current develop-descended branch
 clear -x;
@@ -90,11 +93,11 @@ redirects=$(
 bash -c "less -Rf $redirects";
 ### drig
 # Grep for and show commit on current develop-descended branch
-function g () { git dr $(c8 <<<"$1"); };
+function g () { git dr $(c8 "$1"); };
 run_with_choice g "$(git ldev | grep "$1")";
 ### drlig
 # Grep for and list changed files of commit on current develop-descended branch
-function g () { git drl $(c8 <<<"$1"); };
+function g () { git drl $(c8 "$1"); };
 run_with_choice g "$(git ldev | grep "$1")";
 ### cafi
 # Amend HEAD to fixup! a commit on the current develop-descended branch
@@ -106,7 +109,7 @@ run_with_choice g "$(git ldev)";
 ### cf
 # Commit changes to fixup! the most recent non-fixup! commit on the current develop-descended branch
 target=$(git ldev | grep -vP '^\\w+ fixup!' | head -1);
-commit=$(c8 <<<"$target");
+commit=$(c8 "$target");
 msg=$(cut -c10- <<<"$target");
 echo fixup! $msg;
 git cfr $commit $@;
