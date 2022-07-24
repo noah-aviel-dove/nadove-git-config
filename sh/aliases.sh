@@ -106,6 +106,15 @@ function g {
 };
 export -f g;
 run_with_choice g "$(git ldev)";
+### auca
+git au;
+git ca;
+### aucam
+git au;
+git cam $@;
+### aucami
+git au;
+git cami $@;
 ### cf
 # Commit changes to fixup! the most recent non-fixup! commit on the current develop-descended branch
 target=$(git ldev | grep -vP '^\\w+ fixup!' | head -1);
