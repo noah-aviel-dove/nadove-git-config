@@ -78,6 +78,11 @@ fi;
 ### aurbc
 git au;
 git rbc;
+### d
+args="$(local_py_exec take_positional_args.py 1 $@)";
+head=$(head -1 <<<"$args");
+tail=$(tail +2 <<<"$args");
+git diff ${head:-@} $tail;
 ### d0
 git d --exit-code >/dev/null;
 ### dr
