@@ -9,7 +9,4 @@ scripts:
 clean:
 	rm ./sh/cmds/_nad_git_al_*
 
-.PHONY:
-	update
-	scripts
-	clean
+.PHONY: update scripts clean
