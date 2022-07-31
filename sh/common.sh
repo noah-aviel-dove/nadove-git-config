@@ -1,7 +1,9 @@
 #!/bin/bash
 
 function c8 {
-  cut -c1-8 <<< "$1"
+  for word in $@; do
+    cut -c1-8 <<< "$word";
+  done;
 }
 
 function word1 {

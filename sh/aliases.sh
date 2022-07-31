@@ -4,7 +4,7 @@ exit 0;
 target=$(sed 's/^-$/@{-1}/g'<<<${1:-@});
 git rev-parse --abbrev-ref $target
 ### rev
-target=$(sed 's/^-$/@{-1}/g'<<<${1:-@});
+target=$(perl -pe 's/(?<!-|\w)-(?!-|\w)/@\{-1}/g' <<<${@:-@});
 git rev-parse $target
 ### rev8
 c8 $(git rev $@)
@@ -82,7 +82,7 @@ git rbc;
 args="$(local_py_exec take_positional_args.py 1 $@)";
 head=$(head -1 <<<"$args");
 tail=$(tail +2 <<<"$args");
-git diff ${head:-@} $tail;
+git diff $(git rev ${head:-@} $tail);
 ### d0
 git d --exit-code >/dev/null;
 ### dr
