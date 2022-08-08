@@ -41,14 +41,21 @@ For info on more fine-grained behavior, run
     source environment
     make help
 
-# Disclaimer
 
-Many of these commands make assumptions and take shortcuts that generally work
-out for my own preferred workflows but are not generally applicable. The most
-obvious example is the abundance of aliases that assume the existence of a
-branch called `develop` which is an ancestor of the current branch. I am not
-fixing this because I have no ambition of making these aliases suitable for
-general use.
+Some aliases rely on the concept of a default branch. In order for these
+aliases to function, a value must be explicitly configured for
+`init.defaultBranch`, e.g.
+
+    git config init.defaultBranch develop
+
+This configuration can be done on a per-project using `--local`, `--path`, etc.
+Then run:
+
+    source environment
+    make update
+
+
+# Disclaimer
 
 Proceed at your own risk and please make sure you understand the source of the
 more complicated commands before running them, as some of them do things like

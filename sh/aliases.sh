@@ -5,8 +5,12 @@ target=${1:-@};
 name=$(git rev --abbrev-ref $target);
 echo ${name:-$(git rev $target)}
 ### rev
+if ! default=$(git config --get init.defaultBranch); then
+  echo No default branch configured;
+  exit 1;
+fi;
 function repl() { perl -pe "s/(?<!-|\w)$1(?!-|\w)/$2/g"; };
-target=$(echo ${@:-@} | repl '-' '@\{-1}';
+target=$(echo ${@:-@} | repl '-' '@\{-1}' | repl '=' "$default");
 git rev-parse $target
 ### rev8
 c8 $(git rev $@)
@@ -24,18 +28,24 @@ git bl | grep "$1"
 git bll | grep "$1"
 ### blrg
 git blr | grep "$1"
+### co
+target=$(git b $1);
+shift;
+git checkout $target $@
 ### hr
-# Log sha1 of develop-descended commit's descendants
-git hdev | while read r; do
+# Log sha1 of default-descended commit's descendants
+git hb = | while read r; do
     if [ "$r" == "$1" ]; then
         break;
     fi;
     echo $r;
 done;
 ### lb
-parent=$(git b "$1");
-shift;
-git l $parent.. $@;
+args="$(local_py_exec take_positional_args.py 1 $@)";
+head=$(head -1 <<<"$args");
+tail=$(tail +2 <<<"$args");
+head=$(git b "${head:-=}");
+git l $head.. $tail;
 ### cobig0
 # Grep for and checkout branch
 function g {
@@ -63,8 +73,8 @@ git cobig0 "$(git bll | grep $1)";
 ### cobrig
 git cobig0 "$(git blr | grep $1)";
 ## corig
-# Grep for and checkout revision on current develop-descended branch
-commits=$(git ldev | grep "$1");
+# Grep for and checkout revision on current default-descended branch
+commits=$(git lb | grep "$1");
 function g { git co $(c8 "$1")};
 export -f g;
 run_with_choice g "$"
@@ -77,6 +87,11 @@ elif grep -qPe " -- " <<<"$@"; then
 else
     git r --hard $@;
 fi;
+### rb
+args="$(local_py_exec take_positional_args.py 1 $@)";
+head=$(head -1 <<<"$args");
+tail=$(tail +2 <<<"$args");
+git rebase $(git rev ${head:-=}) $tail;
 ### aurbc
 git au;
 git rbc;
@@ -92,30 +107,30 @@ args="$(local_py_exec take_positional_args.py 1 $@)";
 head=$(head -1 <<<"$args");
 tail=$(tail +2 <<<"$args");
 git show --oneline $(git rev ${head:-@} $tail);
-### dridev
-# Explore commits on current develop-descended branch
+### drib
+# Explore commits on current default-descended branch
 clear -x;
 redirects=$(
-    for r in $(git hdev | tac); do
+    for r in $(git hb $1 | tac); do
         echo -n '<(git show --color=always' $r ') ';
     done;
 );
 bash -c "less -Rf $redirects";
 ### drig
-# Grep for and show commit on current develop-descended branch
+# Grep for and show commit on current default-descended branch
 function g () { git dr $(c8 "$1"); };
-run_with_choice g "$(git ldev | grep "$1")";
+run_with_choice g "$(git lb | grep "$1")";
 ### drlig
-# Grep for and list changed files of commit on current develop-descended branch
+# Grep for and list changed files of commit on current default descended branch
 function g () { git drl $(c8 "$1"); };
-run_with_choice g "$(git ldev | grep "$1")";
+run_with_choice g "$(git lb | grep "$1")";
 ### cafi
-# Amend HEAD to fixup! a commit on the current develop-descended branch
+# Amend HEAD to fixup! a commit on the current default-descended branch
 function g {
     git caf $1;
 };
 export -f g;
-run_with_choice g "$(git ldev)";
+run_with_choice g "$(git lb)";
 ### auca
 git au;
 git ca;
@@ -126,15 +141,15 @@ git cam $@;
 git au;
 git cami $@;
 ### cf
-# Commit changes to fixup! the most recent non-fixup! commit on the current develop-descended branch
-target=$(git ldev | grep -vP '^\\w+ fixup!' | head -1);
+# Commit changes to fixup! the most recent non-fixup! commit on the current default-descended branch
+target=$(git lb | grep -vP '^\\w+ fixup!' | head -1);
 commit=$(c8 "$target");
 msg=$(cut -c10- <<<"$target");
 echo fixup! $msg;
 git cfr $commit $@;
 ### cfri
-# Commit changes to fixup! a selected commit on the current develop-descended branch
-commits=$(git ldev);
+# Commit changes to fixup! a selected commit on the current default-descended branch
+commits=$(git lb);
 function g { git cfr $(word1 "$1"); };
 run_with_choice g "$commits";
 ### car0
@@ -147,7 +162,7 @@ elif ! git dd --exit-code >/dev/null; then
     return 1;
 fi;
 ### car
-# Amend a commit on the current develop-descended branch with staged changes
+# Amend a commit on the current default-descended branch with staged changes
 git car0 || return 1;
 target=$(git rev8 $1);
 ESC=$(python -c 'print(chr(0x1b))');
@@ -155,15 +170,15 @@ fixup=__FIXUP__;
 git ds;
 git cm "${fixup}";
 vcmds=$(printf "/${fixup}\ndd/${target}\np0dwif ${ESC}:wq");
-git rbidev <<<"${vcmds}" || git r @~;
+git rbi <<<"${vcmds}" || git r @~;
 ### cari
-# Select and amend a commit on the current develop-descended branch with staged changes
+# Select and amend a commit on the current default-descended branch with staged changes
 git car0 || return 1;
 function g {
     git car $(word1 "$1");
 };
 export -f g;
-run_with_choice g "$(git ldev)";
+run_with_choice g "$(git lb)";
 ### pu
 git p --set-upstream $1 $(git b);
 ### rhp
@@ -187,7 +202,7 @@ function g {
     git rhpfc $(word1 "$1");
 };
 export -f g;
-run_with_choice g "$(git ldev)";
+run_with_choice g "$(git lb)";
 ### fs
 git f;
 git s;
