@@ -1,11 +1,19 @@
 #!/bin/bash
 
 function c8 {
-  cut -c1-8 <<< "$1"
+  for word in $@; do
+    cut -c1-8 <<< "$word";
+  done;
 }
 
 function word1 {
     cut -f1 -d' ' <<<"$1";
+}
+
+function local_py_exec {
+    py="$1";
+    shift;
+    python3 "$(dirname "$0")/../py/$py" $@;
 }
 
 function run_with_choice {
