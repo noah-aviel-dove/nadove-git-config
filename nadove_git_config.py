@@ -23,8 +23,6 @@ from typing import (
     Union,
 )
 
-import attr
-
 import arg_types
 import environment as env
 from shell import (
@@ -59,11 +57,17 @@ class ConfigAction(Enum):
     rm = '--unset-all'
 
 
-@attr.s(auto_attribs=True, frozen=True, kw_only=True)
 class ConfigEntryTask:
-    file: Optional[str]
-    condition: Union[None, str, bool]
-    action: ConfigAction
+
+    def __init__(
+        self,
+        file: Optional[str],
+        condition: Union[None, str, bool],
+        action: ConfigAction
+    ):
+        self.file = file
+        self.condition = condition
+        self.action = action
 
     @property
     def context(self) -> list[str]:
