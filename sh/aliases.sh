@@ -86,7 +86,10 @@ git diff $(git rev ${head:-@} $tail);
 ### d0
 git d --exit-code >/dev/null;
 ### dr
-git show --oneline $(git rev "$1");
+args="$(local_py_exec take_positional_args.py 1 $@)";
+head=$(head -1 <<<"$args");
+tail=$(tail +2 <<<"$args");
+git show --oneline $(git rev ${head:-@} $tail);
 ### dridev
 # Explore commits on current develop-descended branch
 clear -x;
