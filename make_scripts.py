@@ -65,7 +65,7 @@ def main(argv):
 
     args = parser.parse_args(argv)
 
-    make_scripts(args.source_file_path, pathlib.Path(args.output_dir))
+    make_scripts(args.source_file_path, args.output_dir)
 
 
 if __name__ == '__main__':

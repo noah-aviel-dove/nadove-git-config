@@ -40,14 +40,14 @@ def create_aliases(alias_templates: Iterable[str]) -> Iterable[str]:
     for alias in alias_templates:
         cmd, _, subst = alias.rstrip().partition(' = ')
         if subst == bash_hook:
-            subst = f'!{env.bash_script_prefix + cmd}'
+            subst = f'!{env.bash_script_prefix}{cmd}'
         yield f'{cmd} = {subst}'
 
 
 def create_config_file():
-    with open(env.alias_file, 'w') as out_file:
-        out_file.write(section_header + '\n')
-        with open(env.template_file, 'r') as in_file:
+    with open(env.template_file, 'r') as in_file:
+        with open(env.alias_file, 'w') as out_file:
+            out_file.write(section_header + '\n')
             for alias in create_aliases(in_file):
                 out_file.write(indent + alias + '\n')
 
@@ -82,7 +82,7 @@ class ConfigEntryTask:
         return GitCommand(
             'config',
             *self.context,
-            self.action.value,
+            str(self.action.value),
             self.key,
             env.alias_file,
         )
@@ -163,7 +163,8 @@ if __name__ == '__main__':
         metavar='CONDITION',
         help='''
         Inverse operation for `--include-if`. 
-        The condition must be an exact match for the operation you are trying to undo.
+        The condition string must exactly match that of a corresponding
+        `--include-if` invocation to have any effect.
         ''',
         action='append'
     )
