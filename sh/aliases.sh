@@ -1,10 +1,10 @@
 # Prevent accidentally running the script from executing any commands
 exit 0;
 ### b
-target=$(sed 's/^-$/@{-1}/g'<<<${1:-@});
-git rev-parse --abbrev-ref $target
+git rev --abbrev-ref ${1:-@}
 ### rev
-target=$(perl -pe 's/(?<!-|\w)-(?!-|\w)/@\{-1}/g' <<<${@:-@});
+function repl() { perl -pe "s/(?<!-|\w)$1(?!-|\w)/$2/g"; };
+target=$(echo ${@:-@} | repl '-' '@\{-1}';
 git rev-parse $target
 ### rev8
 c8 $(git rev $@)
