@@ -1,7 +1,9 @@
 # Prevent accidentally running the script from executing any commands
 exit 0;
 ### b
-git rev --abbrev-ref ${1:-@}
+target=${1:-@};
+name=$(git rev --abbrev-ref $target);
+echo ${name:-$(git rev $target)}
 ### rev
 function repl() { perl -pe "s/(?<!-|\w)$1(?!-|\w)/$2/g"; };
 target=$(echo ${@:-@} | repl '-' '@\{-1}';
