@@ -38,6 +38,7 @@ rbia = rbi --autosquash
 rba = rebase --abort
 rbc = rebase --continue
 rbs = rebase --skip
+rbe = rebase --edit-todo
 aurbc = #!bash
 rev = #!bash
 rev8 = #!bash
