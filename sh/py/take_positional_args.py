@@ -11,11 +11,16 @@ args = sys.argv[1:]
 
 n = int(args.pop(0))
 
+
+def is_positional(arg: str) -> bool:
+    return arg == '-' or not arg.startswith('-')
+
+
 head = []
 tail = []
 stop = False
 for arg in args:
-    if len(head) < n and not arg.startswith('--') and not stop:
+    if is_positional(arg) and len(head) < n and not stop:
         head.append(arg)
     else:
         tail.append(arg)
