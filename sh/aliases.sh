@@ -118,7 +118,7 @@ redirects=$(
 bash -c "less -Rf $redirects";
 ### drig
 # Grep for and show commit on current default-descended branch
-function g () { git dr $(c8 "$1"); };
+function g () { git dr $(word1 "$1"); };
 run_with_choice g "$(git lb | grep "$1")";
 ### drlig
 # Grep for and list changed files of commit on current default descended branch
